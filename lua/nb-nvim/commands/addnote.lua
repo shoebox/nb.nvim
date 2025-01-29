@@ -29,7 +29,7 @@ local function create_note(client, playbook, folder, name, defaultContent)
 end
 
 return function(client, obj)
-	local playbook = "shoebox"
+	local playbook = client.config.playbook
 	local folder = obj.fargs[1]
 	local name = obj.fargs[2]
 	if not folder then

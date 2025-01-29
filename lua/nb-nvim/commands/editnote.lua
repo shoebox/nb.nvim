@@ -35,7 +35,7 @@ local function pickNote(client, playbook, folder, name, cb)
 end
 
 return function(client, obj)
-	local playbook = "shoebox"
+	local playbook = client.config.playbook
 	local folder = obj.fargs[1]
 	local noteName = obj.fargs[2]
 

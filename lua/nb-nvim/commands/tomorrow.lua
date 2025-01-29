@@ -7,10 +7,8 @@ local function getNoteName()
 end
 
 return function(client, obj, extras)
-	local playbook = "shoebox"
 	local date = getNoteName()
-
-	local notePath = client.note.GetPath(playbook, "journal", date)
+	local notePath = client.note.GetPath(client.config.playbook, "journal", date)
 
 	-- checking if note already exists
 	local exists = client.note.Exists(notePath)
