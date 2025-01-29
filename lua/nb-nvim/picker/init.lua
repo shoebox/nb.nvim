@@ -4,13 +4,9 @@ local M = {}
 
 function M.notebook(client, cb)
 	local ok, list = client.notebook.List()
-	print("ok", ok)
-	print(vim.inspect(list))
 	if ok == false then
 		return
 	end
-
-	print("list", list)
 
 	local filtered = {}
 	for _, item in ipairs(list) do
