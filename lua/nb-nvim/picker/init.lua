@@ -15,7 +15,7 @@ function M.notebook(client, cb)
 		end
 	end
 
-	M.pick_one(filtered, "Choose notebook", nil, function(selected)
+	ui.pick_one(filtered, "Choose notebook", nil, function(selected)
 		cb(selected)
 	end)
 end
@@ -33,7 +33,7 @@ function M.folder(client, playbook, cb)
 		end
 	end
 
-	M.pick_one(filtered, "Choose folder", nil, function(selected)
+	ui.pick_one(filtered, "Choose folder", nil, function(selected)
 		cb(selected)
 	end)
 end
@@ -43,24 +43,11 @@ function M.notes(client, playbook, folder, cb)
 	if not ok then
 		return false
 	end
-	M.pick_one(notes, "Choose note", nil, function(selected)
+	ui.pick_one(notes, "Choose note", nil, function(selected)
 		cb(selected)
 	end)
 
 	return true
-end
-
-function M.pick_one(items, prompt, label_fn, cb)
-	if not label_fn then
-		label_fn = function(item)
-			return item
-		end
-	end
-
-	vim.ui.select(items, {
-		prompt = prompt,
-		format_item = label_fn,
-	}, cb)
 end
 
 function M.pickNoteName()
