@@ -1,18 +1,27 @@
 local config
+local picker = require("nb-nvim.picker")
 
-local function select_notebook(client, name, cb)
+local M = {}
+M.client = nil
+
+function M.setup(client)
+	M.client = client
+end
+
+function M.selectNotebook(name, cb)
 	if not name then
-		local picker = require("nb-nvim.picker")
-		picker.notebook(client, function(choice)
+		picker.notebook(M.client, function(choice)
 			cb(choice)
 		end)
 		return
 	end
 end
 
-return function(client, obj)
+function M.callback(obj)
 	local name = obj.fargs[1]
-	select_notebook(client, name, function(val)
-		client.config.playbook = val
+	M.selectNotebook(name, function(val)
+		M.client.config.playbook = val
 	end)
 end
+
+return M

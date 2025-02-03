@@ -1,63 +1,21 @@
-local vim = vim
-local ui = require("nb-nvim.ui")
-local M = {}
+local folder = require("nb-nvim.picker.folder")
+local note = require("nb-nvim.picker.note")
+local notebook = require("nb-nvim.picker.notebook")
 
-function M.notebook(client, cb)
-	local ok, list = client.notebook.List()
-	if ok == false then
-		return
-	end
-
-	local filtered = {}
-	for _, item in ipairs(list) do
-		if item ~= "" then
-			table.insert(filtered, item)
+local mt = {
+	__index = function(_, key)
+		if folder[key] then
+			return folder[key]
+		elseif note[key] then
+			return note[key]
+		elseif notebook[key] then
+			return notebook[key]
+		else
+			return nil
 		end
-	end
+	end,
+}
 
-	ui.pick_one(filtered, "Choose notebook", nil, function(selected)
-		cb(selected)
-	end)
-end
+local pickers = setmetatable({}, mt)
 
-function M.folder(client, playbook, cb)
-	local ok, folders = client.notebook.ListFolders(playbook)
-	if ok == false then
-		return
-	end
-
-	local filtered = {}
-	for _, item in ipairs(folders) do
-		if item ~= "" then
-			table.insert(filtered, item)
-		end
-	end
-
-	ui.pick_one(filtered, "Choose folder", nil, function(selected)
-		cb(selected)
-	end)
-end
-
-function M.notes(client, playbook, folder, cb)
-	local ok, notes = client.note.List(playbook, folder)
-	if not ok then
-		return false
-	end
-	ui.pick_one(notes, "Choose note", nil, function(selected)
-		cb(selected)
-	end)
-
-	return true
-end
-
-function M.pickNoteName()
-	local name = ui.prompt("Enter note title: ", {})
-	if not name then
-		vim.notify("No note name provided", vim.log.levels.ERROR)
-		return false, ""
-	end
-
-	return true, name
-end
-
-return M
+return pickers

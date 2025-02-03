@@ -21,7 +21,6 @@ end
 
 local select_notebook = function()
 	local list, ok = notebooks_ls()
-	print(ok, list)
 	opts = opts or {}
 
 	pickers
@@ -33,7 +32,6 @@ local select_notebook = function()
 				actions.select_default:replace(function()
 					actions.close(prompt_bufnr)
 					local selection = action_state.get_selected_entry()
-					print(vim.inspect(selection))
 				end)
 
 				return true

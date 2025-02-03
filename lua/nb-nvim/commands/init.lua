@@ -25,55 +25,57 @@ local M = setmetatable({
 	end,
 })
 
-M.register = function(name, config)
+M.registerCmd = function(name, config)
 	if not config.func then
 		config.func = function(client, data)
-			return M[name](client, data)
+			return M[name].callback(client, data)
 		end
 	end
 
 	M.commands[name] = config
 end
 
-M.install = function(client)
-	for name, config in pairs(M.commands) do
+M.setup = function(client)
+	for name, cmd in pairs(M.commands) do
+		M[name].setup(client)
+
 		local listener = function(data)
-			config.func(client, data)
+			cmd.func(data)
 		end
 
-		vim.api.nvim_create_user_command(name, listener, config.opts)
+		vim.api.nvim_create_user_command(name, listener, cmd.opts)
 	end
 end
 
-M.register("NbAddNote", {
+M.registerCmd("NbAddNote", {
 	opts = {
 		nargs = "*",
 		desc = "Adds a new note into the notebook",
 	},
 })
 
-M.register("NbEditNote", {
+M.registerCmd("NbEditNote", {
 	opts = {
 		nargs = "*",
 		desc = "Edit a note into the notebook",
 	},
 })
 
-M.register("NbToday", {
+M.registerCmd("NbToday", {
 	opts = {
 		nargs = 0,
 		desc = "Adds or edit a journal entry in the notebook for today",
 	},
 })
 
-M.register("NbTomorrow", {
+M.registerCmd("NbTomorrow", {
 	opts = {
 		nargs = 0,
 		desc = "Adds or edit a journal entry in the notebook for tomorrow",
 	},
 })
 
-M.register("NbYesterday", {
+M.registerCmd("NbYesterday", {
 	opts = {
 		nargs = 0,
 		desc = "Adds or edit a journal entry in the notebook for yesterday",
@@ -81,7 +83,7 @@ M.register("NbYesterday", {
 	{ offset = -1 },
 })
 
-M.register("NbSelectNotebook", {
+M.registerCmd("NbSelectNotebook", {
 	opts = {
 		nargs = "*",
 		desc = "Select the active notebook",

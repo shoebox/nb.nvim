@@ -1,7 +1,14 @@
 local ui = require("nb-nvim.ui")
+local picker = require("nb-nvim.picker")
 local vim = vim
+local M = {}
+M.client = nil
 
-local function create_note(client, playbook, folder, name, defaultContent)
+function M.setup(client)
+	M.client = client
+end
+
+function M.create_note(playbook, folder, name, defaultContent)
 	if not name then
 		name = ui.prompt("Enter note title: ", {})
 	end
@@ -9,35 +16,37 @@ local function create_note(client, playbook, folder, name, defaultContent)
 		return
 	end
 
-	local notePath = client.note.GetPath(playbook, folder, name)
+	local notePath = M.client.note.GetPath(playbook, folder, name)
 
 	-- checking if note already exists
-	local exists = client.note.Exists(notePath)
+	local exists = M.client.note.Exists(notePath)
 	if exists then
 		vim.notify("Note already at path: " .. notePath, vim.log.levels.ERROR)
 		return
 	end
 
 	-- adds note to playbook
-	local ok = client.note.Add(notePath, defaultContent)
+	local ok = M.client.note.Add(notePath, defaultContent)
 	if ok == false then
 		vim.notify("Failed to add note at path: " .. notePath, vim.log.levels.ERROR)
 		return false
 	end
 
-	return client.note.Open(notePath)
+	return M.client.note.Open(notePath)
 end
 
-return function(client, obj)
-	local playbook = client.config.playbook
+function M.callback(obj)
+	local playbook = M.client.config.playbook
 	local folder = obj.fargs[1]
 	local name = obj.fargs[2]
+
 	if not folder then
-		local picker = require("nb-nvim.picker")
-		picker.folder(client, playbook, function(choice)
-			create_note(client, playbook, choice, name, "empty")
+		picker.folder(M.client, playbook, function(choice)
+			M.create_note(playbook, choice, name, "empty")
 		end)
 	else
-		create_note(client, playbook, folder, name, "empty")
+		M.create_note(playbook, folder, name, "empty")
 	end
 end
+
+return M

@@ -1,22 +1,28 @@
 local vim = vim
-local ui = require("nb-nvim.ui")
 local picker = require("nb-nvim.picker")
 
-local function openNote(client, playbook, folder, name)
-	local notePath = client.note.GetPath(playbook, folder, name)
+local M = {}
+M.client = nil
 
-	local exists = client.note.Exists(notePath)
+function M.setup(client)
+	M.client = client
+end
+
+function M.openNote(playbook, folder, name)
+	local notePath = M.client.note.GetPath(playbook, folder, name)
+
+	local exists = M.client.note.Exists(notePath)
 	if exists == false then
 		vim.notify("Note do not exists at path: " .. notePath, vim.log.levels.ERROR)
 		return
 	end
 
-	return client.note.Open(notePath)
+	return M.client.note.Open(notePath)
 end
 
-local function pickFolder(client, playbook, folder, cb)
+function M.pickFolder(playbook, folder, cb)
 	if not folder then
-		picker.folder(client, playbook, function(choice)
+		picker.folder(M.client, playbook, function(choice)
 			cb(choice)
 		end)
 	else
@@ -24,9 +30,9 @@ local function pickFolder(client, playbook, folder, cb)
 	end
 end
 
-local function pickNote(client, playbook, folder, name, cb)
+function M.pickNote(playbook, folder, name, cb)
 	if not name then
-		picker.notes(client, playbook, folder, function(choice)
+		picker.notes(M.client, playbook, folder, function(choice)
 			cb(choice)
 		end)
 	else
@@ -34,14 +40,16 @@ local function pickNote(client, playbook, folder, name, cb)
 	end
 end
 
-return function(client, obj)
-	local playbook = client.config.playbook
+function M.callback(obj)
+	local playbook = M.client.config.playbook
 	local folder = obj.fargs[1]
 	local noteName = obj.fargs[2]
 
-	pickFolder(client, playbook, folder, function(selectedFolder)
-		pickNote(client, playbook, selectedFolder, noteName, function(filename)
-			openNote(client, playbook, selectedFolder, filename)
+	M.pickFolder(playbook, folder, function(selectedFolder)
+		M.pickNote(playbook, selectedFolder, noteName, function(filename)
+			M.openNote(playbook, selectedFolder, filename)
 		end)
 	end)
 end
+
+return M

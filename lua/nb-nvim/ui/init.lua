@@ -1,32 +1,18 @@
-local vim = vim
-local M = {}
+local prompt = require("nb-nvim.ui.prompt")
+local select = require("nb-nvim.ui.select")
 
-function M.pick_one(items, prompt, label_fn, cb)
-	if not label_fn then
-		label_fn = function(item)
-			return item
+local mt = {
+	__index = function(_, key)
+		if prompt[key] then
+			return prompt[key]
+		elseif select[key] then
+			return select[key]
+		else
+			return nil
 		end
-	end
+	end,
+}
 
-	vim.ui.select(items, {
-		prompt = prompt,
-		format_item = label_fn,
-	}, cb)
-end
+local ui = setmetatable({}, mt)
 
-function M.prompt(msg, opts)
-	opts = opts or {}
-
-	if not vim.endswith(msg, " ") then
-		msg = msg .. " "
-	end
-
-	local name
-	vim.ui.input({ prompt = msg }, function(input)
-		name = input
-	end)
-
-	return name
-end
-
-return M
+return ui

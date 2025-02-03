@@ -1,29 +1,14 @@
 local journal = require("nb-nvim.journal")
 
-local function getNoteName()
-	local date = journal.getDateWithOffset(0)
+local M = {}
+M.client = nil
 
-	return date
+function M.setup(client)
+	M.client = client
 end
 
-return function(client)
-	local date = getNoteName()
-
-	local notePath = client.note.GetPath(client.config.playbook, "journal", date)
-
-	-- checking if note already exists
-	local exists = client.note.Exists(notePath)
-	if exists then
-		vim.notify("Note already at path: " .. notePath, vim.log.levels.ERROR)
-		return
-	end
-	--
-	-- adds note to playbook
-	local ok = client.note.Add(notePath, date)
-	if ok == false then
-		vim.notify("Failed to add note at path: " .. notePath, vim.log.levels.ERROR)
-		return
-	end
-
-	return client.note.Open(notePath)
+function M.callback()
+	return journal.open(0)
 end
+
+return M
