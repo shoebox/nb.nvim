@@ -1,3 +1,4 @@
+:toc: macro
 ++++
 <h1 align="center">
   <img src="docs/neovim.svg" width="100px" height="100px"/>
@@ -7,6 +8,7 @@
 </h1>
 ++++
 
+toc::[]
 
 == About
 
@@ -30,39 +32,40 @@ The following Neovim commands are available:
 
 === General
 
-* `NbSelectNotebook`: +
+* `:NbSelectNotebook` +
 Switch to another notebook.
 
 === Note taking
-* `NbAddNote`: +
+* `:NbAddNote` +
 Creates a new note into the active notebook. This command has two optional
 argument: the containing folder and name of the new note. If not provided, it
-will prompt you to enter the folder and name. 
-* `NbEditNote`:  +
+will prompt you to enter the folder and name.
+* `:NbEditNote`  +
 To open and edit an existing note in the active notebook. This command has two
 optional argument: the containing folder and name of the new note. If not
 provided, it will prompt you to enter the folder and name.
 
 === Journaling
 
-* `NbToday`: +
+* `:NbToday` +
 To create and/or update today's journal entry into the active notebook.
-* `NbYesterday`: +
+* `:NbYesterday` +
 To create and/or update yesterday's journal entry into the active notebook.
-* `NbTomorrow`: +
+* `:NbTomorrow` +
 To create and/or update tomorrow's journal entry into the active notebook.
 
 == Install and configure
 
 === System requirements
 
-Nb should be installed on your system and in your PATH.
-
-Please refer to https://github.com/xwmx/nb?tab=readme-ov-file#installation[nb's installation guide] for more information.
+Nb should be installed on your system and in your PATH. +
+Please refer to https://github.com/xwmx/nb?tab=readme-ov-file#installation[nb's
+installation guide] for more information.
 
 === Using Packer
 
 [source,lua]
+.Example of configuration using Packer
 ----
 return {
   "shoebox/nb.nvim",
@@ -76,14 +79,24 @@ return {
   },
   config = function()
     require("nb-nvim").setup({
-      debug = false,
-      notebook = "shoebox",
+      notebook = "<<your-default-notebook>>",
     })
   end,
-  -- optional dependency if you want to use the telescope UI for selection.
   dependencies = {
-    "nvim-telescope/telescope-ui-select.nvim",
+    "nvim-telescope/telescope-ui-select.nvim", -- Optional for Telescope UI
   },
 }
 ----
 
+=== Confiugration
+
+You can configure the following properties:
+
+- `playbook` (string): +
+The default notebook to use. Can be changed dynamically with `:NbSelectNotebook`.
+- `extension` (string, optional):  +
+Override the default note file extension.
+Allow to override the default note file extension. +
+If not provided default to the nb configuration.
+- `debug` (boolean): +
+Enable debug mode for troubleshooting.
