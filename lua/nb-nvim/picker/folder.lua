@@ -2,7 +2,6 @@ local M = {}
 local ui = require("nb-nvim.ui")
 
 function M.folder(client, playbook, cb)
-  print("pick folder", client, playbook)
   local ok, folders = client.notebook.ListFolders(playbook)
   if ok == false then
     return false
