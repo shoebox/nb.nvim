@@ -88,7 +88,7 @@ return {
 }
 ----
 
-=== Confiugration
+=== Configuration
 
 You can configure the following properties:
 
