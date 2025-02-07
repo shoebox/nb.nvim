@@ -31,8 +31,6 @@ M.ListFolders = function(playbook)
     .setPlaybook(playbook)
     .execute()
 
-  print("result", vim.inspect(result))
-
   if result.exitCode ~= 0 then
     return false, nil
   end
