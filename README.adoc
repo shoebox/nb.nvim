@@ -1,7 +1,7 @@
 ++++
 <h1 align="center">
-  <img src="docs/neovim.svg" width="100px" height="50px"/>
-  <img src="docs/nb.png" width="150px" height="50px"/>
+  <img src="docs/neovim.svg" width="100px" height="100px"/>
+  <img src="docs/nb.png" width="100px" height="100px"/>
   <br/>
   <b>nb.nvim</b>
 </h1>
