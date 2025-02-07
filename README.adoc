@@ -77,7 +77,7 @@ return {
 		config = function()
 			require("nb-nvim").setup({
                 debug = false,
-				notebook = "your-default-notebook-name",
+                notebook = "your-default-notebook-name",
 			})
 		end,
         -- optional dependencies if you prefer better UI for selection.
