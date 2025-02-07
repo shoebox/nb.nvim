@@ -1,5 +1,89 @@
-= Nb.nvim
+++++
+<h1 align="center">
+  <img src="docs/neovim.svg" width="100px" height="100px" />
+  +
+  <img src="docs/nb.png" width="100px" height="100px" />
+  <br/>
+  <b>nb.nvim</b>
+</h1>
+++++
 
-Neovim plugin for Nb.
 
-*WIP*
+== About
+
+A Neovim plugin for writing and using https://github.com/xwmx/nb[nb]
+notebook, written in Lua.
+
+It provides basic but powerful integration with nb, allowing you to use Neovim
+command to interact with your notebook(s).
+
+It do not emulate any feature from the `nb` command-line and totally rely on
+it to create, read and update notes into the active notebook.
+
+[WARNING]
+.This is a WIP
+This plugin is a work in progress and may not be stable. +
+Please use it with caution.
+
+== Available commands
+
+The following Neovim commands are available:
+
+=== General
+
+* `NbSelectNotebook`: +
+Switch to another notebook.
+
+=== Note taking
+* `NbAddNote`: +
+Creates a new note into the active notebook. This command has two optional
+argument: the containing folder and name of the new note. If not provided, it
+will prompt you to enter the folder and name.
+* `NbEditNote`:  +
+To open and edit an existing note in the active notebook. This command has two
+optional argument: the containing folder and name of the new note. If not
+provided, it will prompt you to enter the folder and name.
+
+=== Journaling
+
+* `NbToday`: +
+To create and/or update today's journal entry into the active notebook.
+* `NbYesterday`: +
+To create and/or update yesterday's journal entry into the active notebook.
+* `NbTomorrow`: +
+To create and/or update tomorrow's journal entry into the active notebook.
+
+== Install and configure
+
+=== System requirements
+
+Nb should be installed on your system and in your PATH.
+
+Please refer to https://github.com/xwmx/nb?tab=readme-ov-file#installation[nb's installation guide] for more information.
+
+=== Using Packer
+
+[source,lua]
+----
+return {
+		dir = "shoebox/nb.nvim",
+		cmd = {
+			"NbAddNote",
+			"NbEditNote",
+			"NbSelectNotebook",
+			"NbToday",
+			"NbYesterday",
+			"NbTomorrow",
+		},
+		config = function()
+			require("nb-nvim").setup({
+				notebook = "shoebox",
+			})
+		end,
+        -- optional dependencies if you prefer better UI for selection.
+		dependencies = {
+			"nvim-telescope/telescope-ui-select.nvim",
+		},
+}
+----
+
