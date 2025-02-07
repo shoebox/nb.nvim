@@ -1,4 +1,3 @@
--- date_util.lua: Single responsibility for date operations
 local DateUtil = {}
 
 function DateUtil.getDateWithOffset(offset)
