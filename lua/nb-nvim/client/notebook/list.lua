@@ -24,6 +24,8 @@ M.ListFolders = function(playbook)
     .New()
     .setCmd("list")
     .setArgs({
+      "--type",
+      "folder",
       "--no-color",
       "--no-id",
       "--no-indicator",
