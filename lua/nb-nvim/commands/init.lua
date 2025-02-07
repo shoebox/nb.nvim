@@ -39,11 +39,7 @@ M.setup = function(client)
   for name, cmd in pairs(M.commands) do
     M[name].setup(client)
 
-    local listener = function(data)
-      cmd.func(data)
-    end
-
-    vim.api.nvim_create_user_command(name, listener, cmd.opts)
+    vim.api.nvim_create_user_command(name, cmd.func, cmd.opts)
   end
 end
 
