@@ -7,6 +7,7 @@ local M = {
   globalargs = {},
   playbook = nil,
   name = nil,
+  debug = false,
 }
 
 function M.New()
@@ -105,7 +106,9 @@ function M.execute(stdin)
   cmdTable = vim.list_extend(cmdTable, { M.getPath() })
   cmdTable = vim.list_extend(cmdTable, M.extraArgs)
 
-  print(vim.inspect(cmdTable))
+  if M.debug then
+    print("Executing command: " .. table.concat(cmdTable, " "))
+  end
 
   local result = {}
   vim
@@ -116,7 +119,6 @@ function M.execute(stdin)
     end)
     :wait()
 
-  print(vim.inspect(result))
   return result
 end
 
