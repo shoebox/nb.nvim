@@ -1,52 +1,53 @@
-local ui = require("nb-nvim.ui")
+local editor = require("nb-nvim.editor.editor")
 local picker = require("nb-nvim.picker")
+local ui = require("nb-nvim.ui")
 local vim = vim
+
 local M = {}
 M.client = nil
 
 function M.setup(client)
-	M.client = client
-end
-
-function M.create_note(playbook, folder, name, defaultContent)
-	if not name then
-		name = ui.prompt("Enter note title: ", {})
-	end
-	if name == nil then
-		return
-	end
-
-	local notePath = M.client.note.GetPath(playbook, folder, name)
-
-	-- checking if note already exists
-	local exists = M.client.note.Exists(notePath)
-	if exists then
-		vim.notify("Note already at path: " .. notePath, vim.log.levels.ERROR)
-		return
-	end
-
-	-- adds note to playbook
-	local ok = M.client.note.Add(notePath, defaultContent)
-	if ok == false then
-		vim.notify("Failed to add note at path: " .. notePath, vim.log.levels.ERROR)
-		return false
-	end
-
-	return M.client.note.Open(notePath)
+  M.client = client
 end
 
 function M.callback(obj)
-	local playbook = M.client.config.playbook
-	local folder = obj.fargs[1]
-	local name = obj.fargs[2]
+  local playbook = M.client.config.playbook
+  local folder = obj.fargs[1]
+  local noteName = obj.fargs[2]
+  if not folder then
+    picker.folder(M.client, playbook, function(choice)
+      M.addNoteInFolder(playbook, choice, noteName)
+    end)
+  else
+    M.addNoteInFolder(playbook, folder, noteName)
+  end
+end
 
-	if not folder then
-		picker.folder(M.client, playbook, function(choice)
-			M.create_note(playbook, choice, name, "empty")
-		end)
-	else
-		M.create_note(playbook, folder, name, "empty")
-	end
+function M.addNoteInFolder(playbook, folder, name)
+  if not name then
+    name = ui.prompt("Enter note title: ", {})
+  end
+
+  local ok = M.client.note.Add(playbook, folder, name)
+  if not ok then
+    return
+  end
+
+  local exists = M.client.note.Exists(playbook, folder, name)
+  if exists == false then
+    vim.notify("Note do not exists at path: " .. playbook .. folder .. name, vim.log.levels.ERROR)
+    return
+  end
+
+  local content
+  ok, content = M.client.note.Print(playbook, folder, name)
+  if not ok then
+    return
+  end
+
+  editor.Edit(name, content, function(editedContent)
+    M.client.note.Edit(playbook, folder, name, editedContent)
+  end)
 end
 
 return M

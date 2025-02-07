@@ -1,45 +1,45 @@
 local M = {}
+local dateUtil = require("date_util")
+local editor = require("nb-nvim.editor.editor")
 
 M.client = nil
 
 function M.setup(client)
-	M.client = client
-	return M
-end
-
-function M.getDateWithOffset(offset)
-	return os.date("%Y-%b-%d", os.time() + offset * 24 * 60 * 60)
-end
-
-function M.createEntry(notePath, name)
-	return M.client.note.Add(notePath, name)
-end
-
-function M.entryExists(notePath)
-	return M.client.note.Exists(notePath)
-end
-
-function M.openEntry(notePath)
-	return M.client.note.Open(notePath)
+  M.client = client
+  return M
 end
 
 function M.open(offset)
-	local date = M.getDateWithOffset(offset)
-	local notePath = M.client.note.GetPath(M.client.config.playbook, "journal", date)
+  local playbook = M.client.config.playbook
+  local name = dateUtil.getDateWithOffset(offset)
+  local folder = "journal"
+  local exists = M.client.note.Exists(playbook, folder, name)
 
-	-- checking if note already exists
-	if M.entryExists(notePath) then
-		vim.notify("Note already at path: " .. notePath, vim.log.levels.ERROR)
-		return
-	end
+  -- if not do not exists, let's create it first
+  if not exists then
+    M.client.note.Add(playbook, folder, name)
+  end
 
-	-- adds note to playbook
-	if not M.createEntry(notePath, date) then
-		vim.notify("Failed to add note at path: " .. notePath, vim.log.levels.ERROR)
-		return
-	end
+  -- retrieving the content of the note
+  local ok, content = M.getNoteContent(playbook, folder, name)
+  if not ok then
+    return
+  end
 
-	return M.openEntry(notePath)
+  -- opening the note in the editor
+  M.editNote(playbook, folder, name, content)
+end
+
+function M.getNoteContent(playbook, folder, name)
+  local ok, content = M.client.note.Print(playbook, folder, name)
+
+  return ok, content
+end
+
+function M.editNote(playbook, folder, name, content)
+  editor.Edit(name, content, function(editedContent)
+    M.client.note.Edit(playbook, folder, name, editedContent)
+  end)
 end
 
 return M
