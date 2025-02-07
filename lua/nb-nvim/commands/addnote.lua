@@ -26,16 +26,19 @@ end
 function M.addNoteInFolder(playbook, folder, name)
   if not name then
     name = ui.prompt("Enter note title: ", {})
+    if not name then
+      return
+    end
+  end
+
+  local exists = M.client.note.Exists(playbook, folder, name)
+  if exists then
+    vim.notify("Note already exists : " .. name, vim.log.levels.ERROR)
+    return
   end
 
   local ok = M.client.note.Add(playbook, folder, name)
   if not ok then
-    return
-  end
-
-  local exists = M.client.note.Exists(playbook, folder, name)
-  if exists == false then
-    vim.notify("Note do not exists at path: " .. playbook .. folder .. name, vim.log.levels.ERROR)
     return
   end
 
