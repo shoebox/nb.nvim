@@ -1,5 +1,5 @@
 local vim = vim
-local editor = require("nb-nvim.editor.editor")
+local editor = require("nb-nvim.editor")
 local picker = require("nb-nvim.picker")
 
 local M = {}

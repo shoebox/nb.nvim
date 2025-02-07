@@ -1,6 +1,6 @@
 local M = {}
 local dateUtil = require("nb-nvim.journal.dateutil")
-local editor = require("nb-nvim.editor.editor")
+local editor = require("nb-nvim.editor")
 
 M.client = nil
 

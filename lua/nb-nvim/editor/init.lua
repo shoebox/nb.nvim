@@ -1,5 +1,8 @@
 local vim = vim
+local config = require("nb-nvim.config")
 local M = {}
+
+function M.setup(opts) end
 
 function M.Edit(name, content, callback)
   local bufferID = M.CreateTempBuffer(name, content)
@@ -11,11 +14,13 @@ function M.CreateTempBuffer(name, content)
 
   local win = vim.api.nvim_get_current_win()
   local bufferID = vim.api.nvim_create_buf(false, false)
+  local fname = os.tmpname() .. "." .. config.extension
+  local filetype = vim.filetype.match({ filename = fname })
 
   vim.api.nvim_win_set_buf(win, bufferID)
-  vim.api.nvim_buf_set_option(bufferID, "filetype", "asciidoc")
+  vim.api.nvim_buf_set_option(bufferID, "filetype", filetype)
   vim.api.nvim_buf_set_lines(bufferID, 0, -1, false, content)
-  vim.api.nvim_buf_set_name(bufferID, os.tmpname() .. ".adoc")
+  vim.api.nvim_buf_set_name(bufferID, fname)
 
   return bufferID
 end

@@ -1,5 +1,6 @@
 local client = require("nb-nvim.client")
 local commands = require("nb-nvim.commands")
+local config = require("nb-nvim.config")
 local journal = require("nb-nvim.journal")
 local nb = setmetatable({}, { __index = journal })
 
@@ -15,8 +16,10 @@ end
 
 function nb.setup(opts)
   opts = opts or {}
+
   client.executor.debug = opts.debug
 
+  config.setup()
   commands.setup(client)
   journal.setup(client)
 end
