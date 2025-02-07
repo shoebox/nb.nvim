@@ -37,7 +37,7 @@ Switch to another notebook.
 * `NbAddNote`: +
 Creates a new note into the active notebook. This command has two optional
 argument: the containing folder and name of the new note. If not provided, it
-will prompt you to enter the folder and name.
+will prompt you to enter the folder and name. 
 * `NbEditNote`:  +
 To open and edit an existing note in the active notebook. This command has two
 optional argument: the containing folder and name of the new note. If not
@@ -65,25 +65,25 @@ Please refer to https://github.com/xwmx/nb?tab=readme-ov-file#installation[nb's 
 [source,lua]
 ----
 return {
-		dir = "shoebox/nb.nvim",
-		cmd = {
-			"NbAddNote",
-			"NbEditNote",
-			"NbSelectNotebook",
-			"NbToday",
-			"NbYesterday",
-			"NbTomorrow",
-		},
-		config = function()
-			require("nb-nvim").setup({
-                debug = false,
-                notebook = "your-default-notebook-name",
-			})
-		end,
-        -- optional dependencies if you prefer better UI for selection.
-		dependencies = {
-			"nvim-telescope/telescope-ui-select.nvim",
-		},
+  "shoebox/nb.nvim",
+  cmd = {
+    "NbAddNote",
+    "NbEditNote",
+    "NbSelectNotebook",
+    "NbToday",
+    "NbYesterday",
+    "NbTomorrow",
+  },
+  config = function()
+    require("nb-nvim").setup({
+      debug = false,
+      notebook = "shoebox",
+    })
+  end,
+  -- optional dependency if you want to use the telescope UI for selection.
+  dependencies = {
+    "nvim-telescope/telescope-ui-select.nvim",
+  },
 }
 ----
 
